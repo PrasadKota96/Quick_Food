@@ -17,7 +17,7 @@ import uk.ac.tees.aad.w9316578.R;
 
 public class LandingActivity extends AppCompatActivity {
 
-    FragmentManager fragmentManager;
+  public static FragmentManager fragmentManager;
     BottomNavigationView bottomNavigationView;
 
 
