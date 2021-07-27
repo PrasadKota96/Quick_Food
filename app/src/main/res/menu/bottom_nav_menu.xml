@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/admin"
-        android:title="Admin"
-        android:icon="@drawable/ic_baseline_person_24"/>
+
 
     <item
         android:id="@+id/customer"
@@ -14,6 +11,11 @@
         android:id="@+id/rider"
         android:title="Rider"
         android:icon="@drawable/ic_rider"/>
+
+    <item
+        android:id="@+id/admin"
+        android:title="Admin"
+        android:icon="@drawable/ic_baseline_person_24"/>
 
 
 </menu>

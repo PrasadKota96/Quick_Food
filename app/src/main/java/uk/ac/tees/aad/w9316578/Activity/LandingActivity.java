@@ -37,7 +37,7 @@ public class LandingActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
-            fragmentManager.beginTransaction().add(R.id.conainer, new AdminLoginFragment(), "admin").commit();
+            fragmentManager.beginTransaction().add(R.id.conainer, new CustomerLoginFragment(), "admin").commit();
         }
 
 
