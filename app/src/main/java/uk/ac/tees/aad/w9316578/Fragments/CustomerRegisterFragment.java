@@ -48,9 +48,8 @@ public class CustomerRegisterFragment extends Fragment {
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     DatabaseReference mUserRef;
+    DatabaseReference mUserType;
 
-    
-    
 
     public CustomerRegisterFragment() {
         // Required empty public constructor
@@ -76,6 +75,8 @@ public class CustomerRegisterFragment extends Fragment {
 
         progressDialog=new ProgressDialog(getContext());
         mUserRef= FirebaseDatabase.getInstance().getReference().child("Customer");
+        mUserType= FirebaseDatabase.getInstance().getReference().child("UserType");
+
 
         mAuth=FirebaseAuth.getInstance();
         mUser=mAuth.getCurrentUser();
@@ -105,7 +106,6 @@ public class CustomerRegisterFragment extends Fragment {
         String password = inputPassword.getText().toString();
         String confrimPassword = inputConfirmPassword.getText().toString();
 
-
         if (!email.matches(emailPattern)) {
             inputEmail.setError("Enter Connext Email");
         } else if (password.isEmpty() || password.length() < 6) {
@@ -134,6 +134,7 @@ public class CustomerRegisterFragment extends Fragment {
                     sendUserToNextActivity();
                     Toast.makeText(getContext(), "Registaration Successful", Toast.LENGTH_SHORT).show();
                 } else {
+
                     progressDialog.dismiss();
                     Toast.makeText(getContext(), "" + task.getException(), Toast.LENGTH_SHORT).show();
                 }
@@ -147,9 +148,22 @@ public class CustomerRegisterFragment extends Fragment {
         hashMap.put("userId",mUser.getUid());
         hashMap.put("username","No available");
         hashMap.put("address","No available");
-        hashMap.put("address","No available");
         hashMap.put("profileImage","not vaialble");
+        hashMap.put("userType","customer");
 
+
+        HashMap hashMap1=new HashMap();
+        hashMap1.put("userId",mUser.getUid());
+        hashMap1.put("userType","customer");
+
+
+
+        mUserType.push().updateChildren(hashMap1).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull @org.jetbrains.annotations.NotNull Task task) {
+
+            }
+        });
 
         mUserRef.child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
             @Override

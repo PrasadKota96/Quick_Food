@@ -26,6 +26,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
 
@@ -51,6 +59,8 @@ public class CustomerLoginFragment extends Fragment {
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private Executor executor;
+    DatabaseReference mUserType;
+    FirebaseUser mUser;
 
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
@@ -78,7 +88,10 @@ public class CustomerLoginFragment extends Fragment {
         fingerprintImageView = view.findViewById(R.id.fingerprintImageView);
 
         progressDialog = new ProgressDialog(getContext());
-        mAuth=FirebaseAuth.getInstance();
+
+        mUserType= FirebaseDatabase.getInstance().getReference().child("UserType");
+        mAuth = FirebaseAuth.getInstance();
+        mUser=mAuth.getCurrentUser();
 
         CheckUserAlreadyLogin();
 
@@ -99,75 +112,7 @@ public class CustomerLoginFragment extends Fragment {
         fingerprintImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                SharedPreferences prefs = getActivity().getApplicationContext().getSharedPreferences("User", MODE_PRIVATE);
-                String userType = prefs.getString("userType", "");
-                String email = prefs.getString("email", "");
-                String password = prefs.getString("password", "");
-
-
-
-                BiometricManager biometricManager = BiometricManager.from(getContext());
-                switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
-                    case BiometricManager.BIOMETRIC_SUCCESS:
-                        Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
-                        break;
-                    case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-                        Toast.makeText(getContext(), "Fingerprint sensor Not exist", Toast.LENGTH_SHORT).show();
-                        break;
-                    case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-                        Toast.makeText(getContext(), "Sensor not avail or busy", Toast.LENGTH_SHORT).show();
-                        break;
-                    case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-                        // Prompts the user to create credentials that your app accepts.
-                        final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
-                        enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                                BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
-                        startActivityForResult(enrollIntent, REQUEST_CODE);
-                        break;
-                }
-
-                executor = ContextCompat.getMainExecutor(getContext());
-                biometricPrompt = new BiometricPrompt(getActivity(),
-                        executor, new BiometricPrompt.AuthenticationCallback() {
-                    @Override
-                    public void onAuthenticationError(int errorCode,
-                                                      @NonNull CharSequence errString) {
-                        super.onAuthenticationError(errorCode, errString);
-                        Toast.makeText(getContext(),
-                                "Authentication error: " + errString, Toast.LENGTH_SHORT)
-                                .show();
-                    }
-
-                    @Override
-                    public void onAuthenticationSucceeded(
-                            @NonNull BiometricPrompt.AuthenticationResult result) {
-                        super.onAuthenticationSucceeded(result);
-
-                        if (email !=null && password!=null)
-                        {
-                            PerformAuthLogin(email,password);
-                        }
-                    }
-
-                    @Override
-                    public void onAuthenticationFailed() {
-                        super.onAuthenticationFailed();
-                        Toast.makeText(getContext(), "Authentication failed",
-                                Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                });
-
-                promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                        .setTitle("Biometric login for my app")
-                        .setSubtitle("Log in using your biometric credential")
-                        .setNegativeButtonText("Use account password")
-                        .build();
-
-
-                biometricPrompt.authenticate(promptInfo);
-
+                PerformFingerPrintAuth();
             }
         });
 
@@ -183,19 +128,84 @@ public class CustomerLoginFragment extends Fragment {
         return view;
     }
 
+    private void PerformFingerPrintAuth() {
+        SharedPreferences prefs = getActivity().getApplicationContext().getSharedPreferences("User", MODE_PRIVATE);
+        String userType = prefs.getString("userType", "");
+        String email = prefs.getString("email", "");
+        String password = prefs.getString("password", "");
+
+
+
+        BiometricManager biometricManager = BiometricManager.from(getContext());
+        switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
+            case BiometricManager.BIOMETRIC_SUCCESS:
+                Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                Toast.makeText(getContext(), "Fingerprint sensor Not exist", Toast.LENGTH_SHORT).show();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+                Toast.makeText(getContext(), "Sensor not avail or busy", Toast.LENGTH_SHORT).show();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                // Prompts the user to create credentials that your app accepts.
+                final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                        BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
+                startActivityForResult(enrollIntent, REQUEST_CODE);
+                break;
+        }
+
+        executor = ContextCompat.getMainExecutor(getContext());
+        biometricPrompt = new BiometricPrompt(getActivity(),
+                executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode,
+                                              @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
+                Toast.makeText(getContext(),
+                        "Authentication error: " + errString, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(
+                    @NonNull BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+
+                if (email !=null && password!=null)
+                {
+                    PerformAuthLogin(email,password);
+                }
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Toast.makeText(getContext(), "Authentication failed",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric login for my app")
+                .setSubtitle("Log in using your biometric credential")
+                .setNegativeButtonText("Use account password")
+                .build();
+
+
+        biometricPrompt.authenticate(promptInfo);
+    }
+
     private void CheckUserAlreadyLogin() {
 
         SharedPreferences prefs = getContext().getSharedPreferences("User", MODE_PRIVATE);
         String userType = prefs.getString("userType", "");
-//        String email = prefs.getString("email", "");
-//        String password = prefs.getString("password", "");
 
-
-        if (userType.equals("customer"))
-        {
+        if (userType.equals("customer")) {
             fingerprintImageView.setVisibility(View.VISIBLE);
-        }else
-        {
+        } else {
             fingerprintImageView.setVisibility(View.GONE);
         }
 
@@ -208,24 +218,53 @@ public class CustomerLoginFragment extends Fragment {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful())
-                {
-                    progressDialog.dismiss();
-                    sendUserToNextActivity();
-                    AddSharePrefernce(email,password);
-                    Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()) {
+                    CheckisACustomer(email,password);
 
-                }else
-                {
+                } else {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(), ""+task.getException(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "" + task.getException(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+    }
+
+    private void CheckisACustomer(String email, String password) {
+
+        mUser=mAuth.getCurrentUser();
+
+        mUserType.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1:snapshot.getChildren())
+                {
+                    if (snapshot1.child("userId").getValue().toString().equals(mUser.getUid()))
+                    {
+                        if (snapshot1.child("userType").getValue().toString().equals("customer"))
+                        {
+                            progressDialog.dismiss();
+                            sendUserToNextActivity();
+                            AddSharePrefernce(email, password);
+                            Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                progressDialog.dismiss();
+                Toast.makeText(getContext(), "Something went wrong ", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void AttemptLogin() {
@@ -237,18 +276,18 @@ public class CustomerLoginFragment extends Fragment {
         } else if (password.isEmpty() || password.length() < 6) {
             inputPassword.setError("Enter Proper Password");
         } else {
-            PerformAuthLogin(email,password);
+            PerformAuthLogin(email, password);
         }
     }
 
     private void sendUserToNextActivity() {
-        Intent intent = new Intent(getContext(), CustomerHomeActivity.class);
+        Intent intent = new Intent(getContext().getApplicationContext(), CustomerHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
     }
 
-    private void AddSharePrefernce(String email,String password) {
+    private void AddSharePrefernce(String email, String password) {
         SharedPreferences.Editor editor = getActivity().getApplicationContext().getSharedPreferences("User", MODE_PRIVATE).edit();
         editor.putString("userType", "customer");
         editor.putString("email", email);
