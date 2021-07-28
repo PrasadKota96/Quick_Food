@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/addFood"
+        android:title="Add Food"
+        android:icon="@drawable/ic_customer"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/order"
+        android:title="See Food Orders"
+        android:icon="@drawable/ic_rider"
+        app:showAsAction="collapseActionView"
+    />
+
+    <item
+        android:id="@+id/logut"
+        android:title="logout"
+        android:icon="@drawable/ic_baseline_person_24"
+        app:showAsAction="collapseActionView"/>
+
+</menu>
