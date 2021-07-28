@@ -52,7 +52,6 @@ public class BottomSheetAddFoodFragment extends BottomSheetDialogFragment {
     TextView selectImageTextView;
 
     ProgressDialog progressDialog;
-
     DatabaseReference mFoodRef;
     StorageReference mFoodStorageRef;
 
@@ -154,10 +153,11 @@ public class BottomSheetAddFoodFragment extends BottomSheetDialogFragment {
                         public void onSuccess(Uri uri) {
                             HashMap hashMap=new HashMap();
                             hashMap.put("date",strDate);
-                            hashMap.put("FoodName",foodName);
-                            hashMap.put("FoodPrice",foodPrice);
-                            hashMap.put("FoodDesc",foodDesc);
-                            hashMap.put("FoodImageUri",uri.toString());
+                            hashMap.put("foodId",pushKey);
+                            hashMap.put("foodName",foodName);
+                            hashMap.put("foodPrice",foodPrice);
+                            hashMap.put("foodDesc",foodDesc);
+                            hashMap.put("foodImageUri",uri.toString());
 
                             mFoodRef.child(pushKey).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
                                 @Override
@@ -190,6 +190,8 @@ public class BottomSheetAddFoodFragment extends BottomSheetDialogFragment {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
 
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {

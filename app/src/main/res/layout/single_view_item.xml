@@ -21,6 +21,7 @@
           android:layout_height="220dp"
           android:scaleType="centerCrop"
           app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.0"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:srcCompat="@drawable/pizza" />
@@ -48,16 +49,6 @@
           android:text="Food Name"
           android:textSize="24sp"
           android:textStyle="bold"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-      <TextView
-          android:id="@+id/addedDate"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
-          android:text="Add Date : 12/12/12"
-          app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
