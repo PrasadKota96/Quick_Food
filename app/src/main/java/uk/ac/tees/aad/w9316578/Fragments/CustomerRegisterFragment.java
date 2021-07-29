@@ -146,10 +146,11 @@ public class CustomerRegisterFragment extends Fragment {
         mUser=mAuth.getCurrentUser();
         HashMap hashMap=new HashMap();
         hashMap.put("userId",mUser.getUid());
-        hashMap.put("username","No available");
-        hashMap.put("address","No available");
-        hashMap.put("profileImage","not vaialble");
+        hashMap.put("username","not available");
+        hashMap.put("address","not available");
+        hashMap.put("profileImage","not available");
         hashMap.put("userType","customer");
+        hashMap.put("phone","not available");
 
 
         HashMap hashMap1=new HashMap();

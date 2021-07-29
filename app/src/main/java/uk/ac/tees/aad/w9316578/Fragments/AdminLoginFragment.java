@@ -218,9 +218,7 @@ public class AdminLoginFragment extends Fragment {
         mAdminRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-
                 if (snapshot.child("username").getValue().toString().equals(email) && snapshot.child("password").getValue().toString().equals(password)) {
-
                     progressDialog.dismiss();
                     sendUserToNextActivity();
                     AddSharePrefernce(email, password);

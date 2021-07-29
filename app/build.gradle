@@ -45,4 +45,7 @@ dependencies {
 
     implementation "androidx.biometric:biometric:1.1.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'
 }

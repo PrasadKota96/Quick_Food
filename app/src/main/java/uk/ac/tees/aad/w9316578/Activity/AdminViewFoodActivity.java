@@ -45,7 +45,6 @@ public class AdminViewFoodActivity extends AppCompatActivity {
     Food food;
     boolean isInnEditMode = false;
     ProgressDialog progressDialog;
-
     DatabaseReference mFoodRef;
     StorageReference mFoodStorageRef;
     Uri imageUri;

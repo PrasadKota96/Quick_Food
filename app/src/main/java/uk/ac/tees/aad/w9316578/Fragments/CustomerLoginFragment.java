@@ -89,9 +89,9 @@ public class CustomerLoginFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getContext());
 
-        mUserType= FirebaseDatabase.getInstance().getReference().child("UserType");
+        mUserType = FirebaseDatabase.getInstance().getReference().child("UserType");
         mAuth = FirebaseAuth.getInstance();
-        mUser=mAuth.getCurrentUser();
+        mUser = mAuth.getCurrentUser();
 
         CheckUserAlreadyLogin();
 
@@ -135,7 +135,6 @@ public class CustomerLoginFragment extends Fragment {
         String password = prefs.getString("password", "");
 
 
-
         BiometricManager biometricManager = BiometricManager.from(getContext());
         switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
@@ -173,9 +172,8 @@ public class CustomerLoginFragment extends Fragment {
                     @NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
 
-                if (email !=null && password!=null)
-                {
-                    PerformAuthLogin(email,password);
+                if (email != null && password != null) {
+                    PerformAuthLogin(email, password);
                 }
             }
 
@@ -222,7 +220,7 @@ public class CustomerLoginFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    CheckisACustomer(email,password);
+                    CheckisACustomer(email, password);
 
                 } else {
                     progressDialog.dismiss();
@@ -235,21 +233,20 @@ public class CustomerLoginFragment extends Fragment {
 
     private void CheckisACustomer(String email, String password) {
 
-        mUser=mAuth.getCurrentUser();
+        mUser = mAuth.getCurrentUser();
 
         mUserType.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1:snapshot.getChildren())
-                {
-                    if (snapshot1.child("userId").getValue().toString().equals(mUser.getUid()))
-                    {
-                        if (snapshot1.child("userType").getValue().toString().equals("customer"))
-                        {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    if (snapshot1.child("userId").getValue().toString().equals(mUser.getUid())) {
+                        if (snapshot1.child("userType").getValue().toString().equals("customer")) {
                             progressDialog.dismiss();
                             sendUserToNextActivity();
                             AddSharePrefernce(email, password);
                             Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+
+                            return;
                         }
                     }
                 }

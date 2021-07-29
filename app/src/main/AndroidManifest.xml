@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.ac.tees.aad.w9316578">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,16 +16,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickFood">
-        <activity android:name=".Activity.AdminViewFoodActivity"></activity>
-        <activity android:name=".Activity.AdminHomeActivity">
+        <activity android:name=".Activity.CustomerViewFoodActivity"></activity>
+        <activity
+            android:name=".Activity.CustomerProfileActivity"
+            android:parentActivityName=".Activity.CustomerHomeActivity" />
+        <activity android:name=".Activity.AdminViewFoodActivity" />
+        <activity android:name=".Activity.AdminHomeActivity" />
+        <activity android:name=".Activity.LandingActivity" />
+        <activity android:name=".Activity.CustomerHomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.LandingActivity" />
-        <activity android:name=".Activity.CustomerHomeActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".Activity.SplashActivity"></activity>
     </application>

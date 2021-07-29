@@ -255,7 +255,6 @@ public class RiderLoginFragment extends Fragment {
     private void CheckisARider(String email, String password) {
 
         mUser = mAuth.getCurrentUser();
-
         mUserType.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -266,6 +265,8 @@ public class RiderLoginFragment extends Fragment {
                             sendUserToNextActivity();
                             AddSharePrefernce(email, password);
                             Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                            return;
+
                         }
                     }
                 }

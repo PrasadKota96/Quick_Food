@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,8 +37,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Toolbar toolbar;
     DatabaseReference mFoodRef;
-    List<Food>foodList;
-
+    List<Food> foodList;
     RecyclerviewAdminFoodAdapter adminFoodAdapter;
 
 
@@ -46,22 +46,22 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
 
-        toolbar=findViewById(R.id.appbar);
+        toolbar = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Admin");
-        fab  = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
 
-        recyclerView=findViewById(R.id.recyclerview);
+        recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mFoodRef= FirebaseDatabase.getInstance().getReference().child("Food");
+        mFoodRef = FirebaseDatabase.getInstance().getReference().child("Food");
 
-        foodList=new ArrayList<>();
+        foodList = new ArrayList<>();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btsf=new BottomSheetAddFoodFragment();
-                btsf.show(getSupportFragmentManager(),btsf.getTag());
+                btsf = new BottomSheetAddFoodFragment();
+                btsf.show(getSupportFragmentManager(), btsf.getTag());
             }
         });
 
@@ -73,14 +73,13 @@ public class AdminHomeActivity extends AppCompatActivity {
         mFoodRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                foodList=new ArrayList<>();
-                for (DataSnapshot snapshot1:snapshot.getChildren())
-                {
-                    Food food=snapshot1.getValue(Food.class);
+                foodList = new ArrayList<>();
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    Food food = snapshot1.getValue(Food.class);
                     foodList.add(food);
                 }
 
-                adminFoodAdapter=new RecyclerviewAdminFoodAdapter(foodList,AdminHomeActivity.this);
+                adminFoodAdapter = new RecyclerviewAdminFoodAdapter(foodList, AdminHomeActivity.this);
                 recyclerView.setAdapter(adminFoodAdapter);
             }
 
@@ -100,7 +99,11 @@ public class AdminHomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.addFood) {
-
+            btsf = new BottomSheetAddFoodFragment();
+            btsf.show(getSupportFragmentManager(), btsf.getTag());
+        } else if (item.getItemId() == R.id.logut) {
+            startActivity(new Intent(AdminHomeActivity.this, LandingActivity.class));
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
