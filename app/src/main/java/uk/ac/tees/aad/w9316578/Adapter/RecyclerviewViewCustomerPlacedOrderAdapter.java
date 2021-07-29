@@ -1,6 +1,7 @@
 package uk.ac.tees.aad.w9316578.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import uk.ac.tees.aad.w9316578.Activity.CustomerViewOrderDetialActivity;
 import uk.ac.tees.aad.w9316578.Model.CartFood;
 import uk.ac.tees.aad.w9316578.Model.OrderInfo;
 import uk.ac.tees.aad.w9316578.R;
@@ -48,7 +50,10 @@ public class RecyclerviewViewCustomerPlacedOrderAdapter extends RecyclerView.Ada
        holder.itemView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-
+               Intent intent=new Intent(context, CustomerViewOrderDetialActivity.class);
+               intent.putExtra("orderInfo",list.get(position));
+               intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               context.startActivity(intent);
            }
        });
 

@@ -21,21 +21,26 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewAdminFoodAdapter;
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewCustomerFoodAdapter;
 import uk.ac.tees.aad.w9316578.Fragments.BottomSheetAddFoodFragment;
 import uk.ac.tees.aad.w9316578.Model.CartFood;
+import uk.ac.tees.aad.w9316578.Model.Customer;
 import uk.ac.tees.aad.w9316578.Model.Food;
 import uk.ac.tees.aad.w9316578.R;
 import uk.ac.tees.aad.w9316578.SqliteDatabase.DataBaseHelper;
@@ -54,6 +59,12 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     ImageView cartImageView;
     TextView counterNumberToolBar;
     DataBaseHelper helper;
+    CircleImageView profileImage;
+    TextView usernameTv;
+    FirebaseAuth mAuth;
+    FirebaseUser mUser;
+    DatabaseReference mUserRef;
+
 
 
     @Override
@@ -75,11 +86,14 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFoodRef = FirebaseDatabase.getInstance().getReference().child("Food");
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Customer");
         foodList = new ArrayList<>();
         helper = new DataBaseHelper(this);
         counterNumberToolBar = findViewById(R.id.counterTextView);
         cartImageView = findViewById(R.id.cartImageView);
         counterNumberToolBar.setVisibility(View.GONE);
+        mAuth=FirebaseAuth.getInstance();
+        mUser=mAuth.getCurrentUser();
 
         LoadCartItems();
         LoadFood();
@@ -87,11 +101,39 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         cartImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CustomerHomeActivity.this,ViewCartActivity.class));
+                startActivity(new Intent(CustomerHomeActivity.this, ViewCartActivity.class));
             }
         });
+        View view=navigationView.inflateHeaderView(R.layout.drawer_header);
+        usernameTv=view.findViewById(R.id.username);
+        profileImage=view.findViewById(R.id.profile_image_haeder);
 
 
+        LoadMyProfile();
+
+
+    }
+
+    private void LoadMyProfile() {
+        mUserRef.child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Customer customer=snapshot.getValue(Customer.class);
+                usernameTv.setText(""+customer.getUsername());
+                Picasso.get().load(customer.getProfileImage()).into(profileImage);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LoadCartItems();
     }
 
     private void LoadCartItems() {
@@ -161,8 +203,17 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
         if (item.getItemId() == R.id.profile) {
             startActivity(new Intent(CustomerHomeActivity.this, CustomerProfileActivity.class));
-        } if (item.getItemId() == R.id.myOrder) {
+        }
+        if (item.getItemId() == R.id.myOrder) {
             startActivity(new Intent(CustomerHomeActivity.this, CustomerMyOrderActivity.class));
+        }
+        if (item.getItemId() == R.id.cart) {
+            startActivity(new Intent(CustomerHomeActivity.this, ViewCartActivity.class));
+        }
+        if (item.getItemId() == R.id.logut) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(CustomerHomeActivity.this, LandingActivity.class));
+            finish();
         }
         return false;
     }

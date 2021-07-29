@@ -6,6 +6,9 @@ public class CartFood {
     private String foodName, foodPrice;
     private String foodDesc, foodImageUri,foodItems;
 
+    public CartFood() {
+    }
+
     public String getFoodItems() {
         return foodItems;
     }

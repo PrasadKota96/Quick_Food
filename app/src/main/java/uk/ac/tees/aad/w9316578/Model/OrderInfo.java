@@ -1,6 +1,8 @@
 package uk.ac.tees.aad.w9316578.Model;
 
-public class OrderInfo {
+import java.io.Serializable;
+
+public class OrderInfo implements Serializable {
     String dateOrder,orderID,status,totalAmount;
 
     public OrderInfo() {
