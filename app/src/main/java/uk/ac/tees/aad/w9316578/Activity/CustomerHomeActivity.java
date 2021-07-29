@@ -210,7 +210,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         if (item.getItemId() == R.id.cart) {
             startActivity(new Intent(CustomerHomeActivity.this, ViewCartActivity.class));
         }
-        if (item.getItemId() == R.id.logut) {
+        if (item.getItemId() == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(CustomerHomeActivity.this, LandingActivity.class));
             finish();

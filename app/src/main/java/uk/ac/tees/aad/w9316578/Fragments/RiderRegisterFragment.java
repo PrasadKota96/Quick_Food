@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 import uk.ac.tees.aad.w9316578.Activity.CustomerHomeActivity;
 import uk.ac.tees.aad.w9316578.Activity.LandingActivity;
+import uk.ac.tees.aad.w9316578.Activity.RiderHomeActivity;
 import uk.ac.tees.aad.w9316578.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -185,7 +186,7 @@ public class RiderRegisterFragment extends Fragment {
     }
 
     private void sendUserToNextActivity () {
-        Intent intent = new Intent(getContext(), CustomerHomeActivity.class);
+        Intent intent = new Intent(getContext(), RiderHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

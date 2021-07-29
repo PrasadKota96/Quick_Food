@@ -38,6 +38,7 @@ import java.util.concurrent.Executor;
 
 import uk.ac.tees.aad.w9316578.Activity.CustomerHomeActivity;
 import uk.ac.tees.aad.w9316578.Activity.LandingActivity;
+import uk.ac.tees.aad.w9316578.Activity.RiderHomeActivity;
 import uk.ac.tees.aad.w9316578.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -186,6 +187,7 @@ public class RiderLoginFragment extends Fragment {
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Biometric login for my app")
                 .setSubtitle("Place your finger on sensor to login")
+                .setNegativeButtonText("Use account password")
                 .build();
         biometricPrompt.authenticate(promptInfo);
     }
@@ -238,7 +240,7 @@ public class RiderLoginFragment extends Fragment {
     }
 
     private void sendUserToNextActivity() {
-        Intent intent = new Intent(getContext(), CustomerHomeActivity.class);
+        Intent intent = new Intent(getContext(), RiderHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
