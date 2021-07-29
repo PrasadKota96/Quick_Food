@@ -9,9 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -29,8 +35,10 @@ import java.util.List;
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewAdminFoodAdapter;
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewCustomerFoodAdapter;
 import uk.ac.tees.aad.w9316578.Fragments.BottomSheetAddFoodFragment;
+import uk.ac.tees.aad.w9316578.Model.CartFood;
 import uk.ac.tees.aad.w9316578.Model.Food;
 import uk.ac.tees.aad.w9316578.R;
+import uk.ac.tees.aad.w9316578.SqliteDatabase.DataBaseHelper;
 
 public class CustomerHomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -40,10 +48,12 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     RecyclerView recyclerView;
     Toolbar toolbar;
     FloatingActionButton fab;
-    public static BottomSheetAddFoodFragment btsf;
     DatabaseReference mFoodRef;
     List<Food> foodList;
     RecyclerviewCustomerFoodAdapter adminFoodAdapter;
+    ImageView cartImageView;
+    TextView counterNumberToolBar;
+    DataBaseHelper helper;
 
 
     @Override
@@ -52,24 +62,77 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_customer_home);
 
 
-
         toolbar = findViewById(R.id.appBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Customer");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home);
         fab = findViewById(R.id.fab);
-        drawerLayout=findViewById(R.id.drawaerLayout);
-        navigationView=findViewById(R.id.navigationView);
+        drawerLayout = findViewById(R.id.drawaerLayout);
+        navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFoodRef = FirebaseDatabase.getInstance().getReference().child("Food");
         foodList = new ArrayList<>();
+        helper = new DataBaseHelper(this);
+        counterNumberToolBar = findViewById(R.id.counterTextView);
+        cartImageView = findViewById(R.id.cartImageView);
+        counterNumberToolBar.setVisibility(View.GONE);
 
+        LoadCartItems();
         LoadFood();
 
+        cartImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CustomerHomeActivity.this,ViewCartActivity.class));
+            }
+        });
+
+
+    }
+
+    private void LoadCartItems() {
+        getAllCart();
+
+        counterNumberToolBar.setText(getAllCart().size() + "");
+        if (getAllCart().size() > 0) {
+            counterNumberToolBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public ArrayList<CartFood> getAllCart() {
+        ArrayList<CartFood> cartList = new ArrayList<CartFood>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM food";
+
+        SQLiteDatabase db = helper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                //countinue here to count total ietms and assign notification cart
+
+                CartFood cartFood;
+                int id = cursor.getInt(0);
+                String date = cursor.getString(1);
+                String foodId = cursor.getString(2);
+                String foodName = cursor.getString(3);
+                String foodPrice = cursor.getString(4);
+                String foodDesc = cursor.getString(5);
+                String foodItems = cursor.getString(6);
+                String foodImageUri = cursor.getString(7);
+                cartFood = new CartFood(id, date, foodId, foodName, foodPrice, foodDesc, foodImageUri, foodItems);
+                cartList.add(cartFood);
+
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return cartList;
     }
 
 
@@ -96,9 +159,10 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-        if (item.getItemId()==R.id.profile)
-        {
-            startActivity(new Intent(CustomerHomeActivity.this,CustomerProfileActivity.class));
+        if (item.getItemId() == R.id.profile) {
+            startActivity(new Intent(CustomerHomeActivity.this, CustomerProfileActivity.class));
+        } if (item.getItemId() == R.id.myOrder) {
+            startActivity(new Intent(CustomerHomeActivity.this, CustomerMyOrderActivity.class));
         }
         return false;
     }
@@ -111,8 +175,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId()==android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);

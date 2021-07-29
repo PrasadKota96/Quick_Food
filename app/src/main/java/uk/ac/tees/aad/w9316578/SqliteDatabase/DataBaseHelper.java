@@ -20,7 +20,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_FOOD + "("
@@ -37,11 +36,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean removeItem(String id)
-    {
+    public boolean removeItem(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_FOOD, "id" + "=?", new String[]{id}) > 0;
         //return db.delete(TABLE_Users, id + "=" + "id", null) > 0;
+    }
+
+    public void removeAllItem() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_FOOD);
     }
 
 
@@ -53,7 +56,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertData(String date, String foodId,String foodName,String foodPrice,String foodDesc,String foodItems,String foodImageUri) {
+    public void insertData(String date, String foodId, String foodName, String foodPrice, String foodDesc, String foodItems, String foodImageUri) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("date", date);
