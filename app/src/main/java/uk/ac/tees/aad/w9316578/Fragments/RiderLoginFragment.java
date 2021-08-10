@@ -36,9 +36,9 @@ import com.google.firebase.database.annotations.NotNull;
 
 import java.util.concurrent.Executor;
 
-import uk.ac.tees.aad.w9316578.Activity.CustomerHomeActivity;
 import uk.ac.tees.aad.w9316578.Activity.LandingActivity;
 import uk.ac.tees.aad.w9316578.Activity.RiderHomeActivity;
+import uk.ac.tees.aad.w9316578.Activity.RiderTrackActivity;
 import uk.ac.tees.aad.w9316578.R;
 
 import static android.content.Context.MODE_PRIVATE;

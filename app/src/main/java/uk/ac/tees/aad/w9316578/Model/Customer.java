@@ -1,6 +1,8 @@
 package uk.ac.tees.aad.w9316578.Model;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
 
     private String address,phone,userId,userType,username,profileImage;
 

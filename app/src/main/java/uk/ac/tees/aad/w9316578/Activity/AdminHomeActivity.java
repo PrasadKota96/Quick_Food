@@ -40,7 +40,6 @@ public class AdminHomeActivity extends AppCompatActivity {
     List<Food> foodList;
     RecyclerviewAdminFoodAdapter adminFoodAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +63,7 @@ public class AdminHomeActivity extends AppCompatActivity {
                 btsf.show(getSupportFragmentManager(), btsf.getTag());
             }
         });
-
         LoadFood();
-
     }
 
     private void LoadFood() {
@@ -78,7 +75,6 @@ public class AdminHomeActivity extends AppCompatActivity {
                     Food food = snapshot1.getValue(Food.class);
                     foodList.add(food);
                 }
-
                 adminFoodAdapter = new RecyclerviewAdminFoodAdapter(foodList, AdminHomeActivity.this);
                 recyclerView.setAdapter(adminFoodAdapter);
             }
@@ -104,6 +100,10 @@ public class AdminHomeActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.logut) {
             startActivity(new Intent(AdminHomeActivity.this, LandingActivity.class));
             finish();
+        }
+        else if (item.getItemId() == R.id.order) {
+            startActivity(new Intent(AdminHomeActivity.this, AdminAvailableOrderActivity.class));
+
         }
         return super.onOptionsItemSelected(item);
     }

@@ -63,7 +63,7 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/input_category_field"
         android:ems="10"
-        android:hint="Price ($ 2.00)"
+        android:hint="Price (£ 2.00)"
         android:inputType="number"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"

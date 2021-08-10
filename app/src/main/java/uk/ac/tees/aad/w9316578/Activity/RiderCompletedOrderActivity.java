@@ -21,65 +21,74 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewCartAdapter;
-import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewCustomerPlacedOrderAdapter;
+import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewRiderAvailabaleOrderAdapter;
+import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewRiderCompletedOrderAdapter;
 import uk.ac.tees.aad.w9316578.Model.OrderInfo;
+import uk.ac.tees.aad.w9316578.Model.OrderInfoForRider;
 import uk.ac.tees.aad.w9316578.R;
-import uk.ac.tees.aad.w9316578.SqliteDatabase.DataBaseHelper;
 
-public class CustomerMyOrderActivity extends AppCompatActivity {
+public class RiderCompletedOrderActivity extends AppCompatActivity {
 
-    DatabaseReference mOrderRef, mOrderInfo, mUserRef;
+
+    DatabaseReference mOrderRef, mOrderInfo, mUserRef,mRiderPickedOrder;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     Toolbar toolbar;
+
     RecyclerView recyclerView;
-    List<OrderInfo>orderInfoList;
-    RecyclerviewViewCustomerPlacedOrderAdapter adapter;
-   
+    List<OrderInfoForRider>orderInfoForRiderList;
+    RecyclerviewViewRiderCompletedOrderAdapter adapter;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_order);
+        setContentView(R.layout.activity_rider_completed_order);
+
 
         toolbar = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("My Orders");
+        getSupportActionBar().setTitle("Completed Orders");
 
-        orderInfoList=new ArrayList<>();
-        recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-//       
-//        adapter = new RecyclerviewViewCartAdapter(getAllCart(), this);
-//        recyclerView.setAdapter(adapter);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+
+        orderInfoForRiderList=new ArrayList<>();
+        recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mOrderRef = FirebaseDatabase.getInstance().getReference().child("OrderFoodItems");
         mOrderInfo = FirebaseDatabase.getInstance().getReference().child("OrderInfo");
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Customer");
-        
-        LaodOrder();
+        mRiderPickedOrder = FirebaseDatabase.getInstance().getReference().child("RiderSentOrders");
+
+
+        LoadMySentOrders();
+
+
     }
 
-    private void LaodOrder() {
-        mOrderInfo.addValueEventListener(new ValueEventListener() {
+    private void LoadMySentOrders() {
+        mRiderPickedOrder.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                orderInfoList=new ArrayList<>();
-                for (DataSnapshot snapshot1:snapshot.getChildren())
+                if (snapshot.exists())
                 {
-                  if (snapshot1.child("userID").getValue().toString().equals(mUser.getUid()))
-                  {
-                      OrderInfo orderInfo=snapshot1.getValue(OrderInfo.class);
-                      orderInfoList.add(orderInfo);
-                  }
+                    orderInfoForRiderList=new ArrayList<>();
+                    for (DataSnapshot snapshot1:snapshot.getChildren())
+                    {
+                        OrderInfoForRider infoForRider=snapshot1.getValue(OrderInfoForRider.class);
+                      if (infoForRider.getRiderID().equals(mUser.getUid()))
+                      {
+                          orderInfoForRiderList.add(infoForRider);
+                      }
+                    }
+                    adapter=new RecyclerviewViewRiderCompletedOrderAdapter(orderInfoForRiderList,RiderCompletedOrderActivity.this);
+                    recyclerView.setAdapter(adapter);
                 }
-                adapter=new RecyclerviewViewCustomerPlacedOrderAdapter(orderInfoList,getApplicationContext());
-                recyclerView.setAdapter(adapter);
-
             }
 
             @Override

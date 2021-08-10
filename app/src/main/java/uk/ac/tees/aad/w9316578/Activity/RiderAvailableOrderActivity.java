@@ -15,53 +15,53 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
+import com.google.firebase.database.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewCartAdapter;
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewCustomerPlacedOrderAdapter;
+import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewViewRiderAvailabaleOrderAdapter;
+import uk.ac.tees.aad.w9316578.Model.CartFood;
 import uk.ac.tees.aad.w9316578.Model.OrderInfo;
+import uk.ac.tees.aad.w9316578.Model.OrderInfoForRider;
 import uk.ac.tees.aad.w9316578.R;
-import uk.ac.tees.aad.w9316578.SqliteDatabase.DataBaseHelper;
 
-public class CustomerMyOrderActivity extends AppCompatActivity {
+public class RiderAvailableOrderActivity extends AppCompatActivity {
 
     DatabaseReference mOrderRef, mOrderInfo, mUserRef;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     Toolbar toolbar;
     RecyclerView recyclerView;
-    List<OrderInfo>orderInfoList;
-    RecyclerviewViewCustomerPlacedOrderAdapter adapter;
-   
+    List<OrderInfoForRider>orderInfoList;
+    RecyclerviewViewRiderAvailabaleOrderAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_order);
+        setContentView(R.layout.activity_rider_available_order);
+
 
         toolbar = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("My Orders");
+        getSupportActionBar().setTitle("Available Orders");
 
         orderInfoList=new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//       
-//        adapter = new RecyclerviewViewCartAdapter(getAllCart(), this);
-//        recyclerView.setAdapter(adapter);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mOrderRef = FirebaseDatabase.getInstance().getReference().child("OrderFoodItems");
         mOrderInfo = FirebaseDatabase.getInstance().getReference().child("OrderInfo");
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Customer");
-        
+
         LaodOrder();
+
     }
 
     private void LaodOrder() {
@@ -71,13 +71,13 @@ public class CustomerMyOrderActivity extends AppCompatActivity {
                 orderInfoList=new ArrayList<>();
                 for (DataSnapshot snapshot1:snapshot.getChildren())
                 {
-                  if (snapshot1.child("userID").getValue().toString().equals(mUser.getUid()))
-                  {
-                      OrderInfo orderInfo=snapshot1.getValue(OrderInfo.class);
-                      orderInfoList.add(orderInfo);
-                  }
+                    if (snapshot1.child("status").getValue().toString().equals("pending"))
+                    {
+                        OrderInfo orderInfo=snapshot1.getValue(OrderInfo.class);
+                        orderInfoList.add(new OrderInfoForRider(orderInfo.getDateOrder(),orderInfo.getOrderID(),orderInfo.getStatus(),orderInfo.getTotalAmount(),orderInfo.getUserID(),snapshot1.getRef().getKey().toString(),""));
+                    }
                 }
-                adapter=new RecyclerviewViewCustomerPlacedOrderAdapter(orderInfoList,getApplicationContext());
+                adapter=new RecyclerviewViewRiderAvailabaleOrderAdapter(orderInfoList,getApplicationContext());
                 recyclerView.setAdapter(adapter);
 
             }

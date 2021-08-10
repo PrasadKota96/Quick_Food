@@ -149,7 +149,8 @@ public class ViewCartActivity extends AppCompatActivity {
                 hashMap.put("orderID", orderID);
                 hashMap.put("status", "pending");
                 hashMap.put("dateOrder", strDate);
-                mOrderInfo.child(mUser.getUid()).child(orderID).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+                hashMap.put("userID", mUser.getUid());
+                mOrderInfo.child(orderID).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task task) {
                         if (task.isSuccessful()) {
@@ -177,8 +178,8 @@ public class ViewCartActivity extends AppCompatActivity {
             }
 
             totalAmountWithTax = totalAmount + 1 + 1;
-            totalPriceTv.setText("$" + totalAmount);
-            totalPricePlusAllTaxTv.setText("$" + totalAmountWithTax);
+            totalPriceTv.setText("£" + totalAmount);
+            totalPricePlusAllTaxTv.setText("£" + totalAmountWithTax);
         }
     }
 

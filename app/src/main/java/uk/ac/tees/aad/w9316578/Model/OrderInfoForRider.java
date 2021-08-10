@@ -2,18 +2,36 @@ package uk.ac.tees.aad.w9316578.Model;
 
 import java.io.Serializable;
 
-public class OrderInfo implements Serializable {
-    String dateOrder,orderID,status,totalAmount,userID;
+public class OrderInfoForRider implements Serializable {
+    String dateOrder,orderID,status,totalAmount,userID,OrderInfoID,riderID;
 
-    public OrderInfo() {
+    public OrderInfoForRider() {
     }
 
-    public OrderInfo(String dateOrder, String orderID, String status, String totalAmount, String userID) {
+    public OrderInfoForRider(String dateOrder, String orderID, String status, String totalAmount, String userID, String orderInfoID, String riderID) {
         this.dateOrder = dateOrder;
         this.orderID = orderID;
         this.status = status;
         this.totalAmount = totalAmount;
         this.userID = userID;
+        OrderInfoID = orderInfoID;
+        this.riderID = riderID;
+    }
+
+    public String getRiderID() {
+        return riderID;
+    }
+
+    public void setRiderID(String riderID) {
+        this.riderID = riderID;
+    }
+
+    public String getOrderInfoID() {
+        return OrderInfoID;
+    }
+
+    public void setOrderInfoID(String orderInfoID) {
+        OrderInfoID = orderInfoID;
     }
 
     public String getUserID() {

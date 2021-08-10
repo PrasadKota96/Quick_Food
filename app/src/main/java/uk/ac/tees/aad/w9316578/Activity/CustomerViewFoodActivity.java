@@ -143,7 +143,7 @@ public class CustomerViewFoodActivity extends AppCompatActivity {
 
     private void AssignData() {
         foodName.setText(food.getFoodName());
-        foodPrice.setText("$ " + food.getFoodPrice());
+        foodPrice.setText("£ " + food.getFoodPrice());
         foodDesc.setText(food.getFoodDesc());
         Picasso.get().load(food.getFoodImageUri()).into(imageViewFood);
     }

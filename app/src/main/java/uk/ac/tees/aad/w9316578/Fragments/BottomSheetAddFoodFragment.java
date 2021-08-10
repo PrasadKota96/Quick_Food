@@ -197,7 +197,7 @@ public class BottomSheetAddFoodFragment extends BottomSheetDialogFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_PICTURE) {
-            Toast.makeText(getContext(), "dfsdgd", Toast.LENGTH_SHORT).show();
+
             imageUri = data.getData();
             imageViewFood.setImageURI(imageUri);
             imageViewFood.setVisibility(View.VISIBLE);

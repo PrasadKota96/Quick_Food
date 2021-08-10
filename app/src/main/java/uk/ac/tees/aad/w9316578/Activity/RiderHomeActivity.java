@@ -1,41 +1,94 @@
 package uk.ac.tees.aad.w9316578.Activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.jetbrains.annotations.NotNull;
+import android.os.Handler;
+import android.view.View;
+import android.widget.TextView;
 
 import uk.ac.tees.aad.w9316578.R;
+import uk.ac.tees.aad.w9316578.Receiver.NetworkReceiver;
 
-public class RiderHomeActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class RiderHomeActivity extends AppCompatActivity {
 
-    GoogleMap mGoogleMap;
+    private BroadcastReceiver mNetworkReceiver;
+    Toolbar toolbar;
+    CardView cardViewGoogleMap,cardViewViewOrder,completedOrder;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_home);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mNetworkReceiver = new NetworkReceiver();
+        registerNetworkBroadcastForNougat();
+
+        toolbar=findViewById(R.id.appbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Rider");
+
+        cardViewGoogleMap=findViewById(R.id.googleMap);
+        cardViewViewOrder=findViewById(R.id.availableRider);
+        cardViewViewOrder=findViewById(R.id.availableRider);
+        completedOrder=findViewById(R.id.completedOrder);
+
+        cardViewGoogleMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RiderHomeActivity.this,RiderTrackActivity.class));
+            }
+        });
+
+        cardViewViewOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RiderHomeActivity.this,RiderAvailableOrderActivity.class));
+            }
+        });
+
+        completedOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RiderHomeActivity.this,RiderCompletedOrderActivity.class));
+            }
+        });
+
+
+
+    }
+
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(mNetworkReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
-        mGoogleMap=googleMap;
-        LatLng sydney = new LatLng(-34, 151);
-        mGoogleMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney"));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
     }
 }

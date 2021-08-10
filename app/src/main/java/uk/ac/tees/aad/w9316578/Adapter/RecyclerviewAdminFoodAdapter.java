@@ -43,7 +43,7 @@ public class RecyclerviewAdminFoodAdapter extends RecyclerView.Adapter<Recyclerv
     public void onBindViewHolder(@NonNull @NotNull RecyclerviewAdminFoodAdapter.MyViewHolder holder, int position) {
 
         holder.menuName.setText(list.get(position).getFoodName());
-        holder.menuPrice.setText("Price : " + list.get(position).getFoodPrice());
+        holder.menuPrice.setText("Price : £" + list.get(position).getFoodPrice());
         //  holder.addedDate.setText(list.get(position).getDate());
         Picasso.get().load(list.get(position).getFoodImageUri()).into(holder.foodImage);
 

@@ -70,11 +70,11 @@ public class CustomerViewOrderDetialActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAuth = FirebaseAuth.getInstance();
+
         btnCancelOrder = findViewById(R.id.checkout);
         totalPriceTv = findViewById(R.id.totalPrice);
         totalPricePlusAllTaxTv = findViewById(R.id.totalPricePlusAllTax);
-
+        mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mOrderRef = FirebaseDatabase.getInstance().getReference().child("OrderFoodItems");
         mOrderInfo = FirebaseDatabase.getInstance().getReference().child("OrderInfo");
@@ -138,8 +138,8 @@ public class CustomerViewOrderDetialActivity extends AppCompatActivity {
             }
 
             totalAmountWithTax = totalAmount + 1 + 1;
-            totalPriceTv.setText("$" + totalAmount);
-            totalPricePlusAllTaxTv.setText("$" + totalAmountWithTax);
+            totalPriceTv.setText("£" + totalAmount);
+            totalPricePlusAllTaxTv.setText("£" + totalAmountWithTax);
         }
     }
 }

@@ -48,7 +48,7 @@ public class RecyclerviewViewCartAdapter extends RecyclerView.Adapter<Recyclervi
         holder.foodDesc.setText(list.get(position).getFoodDesc());
         holder.addedDate.setText(list.get(position).getDate());
       Picasso.get().load(list.get(position).getFoodImageUri()).into(holder.foodImage);
-        holder.foodPrice.setText("Price : $" + list.get(position).getFoodPrice());
+        holder.foodPrice.setText("Price : £" + list.get(position).getFoodPrice());
 
 
     }

@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -36,13 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewAdminFoodAdapter;
 import uk.ac.tees.aad.w9316578.Adapter.RecyclerviewCustomerFoodAdapter;
-import uk.ac.tees.aad.w9316578.Fragments.BottomSheetAddFoodFragment;
 import uk.ac.tees.aad.w9316578.Model.CartFood;
 import uk.ac.tees.aad.w9316578.Model.Customer;
 import uk.ac.tees.aad.w9316578.Model.Food;
 import uk.ac.tees.aad.w9316578.R;
+import uk.ac.tees.aad.w9316578.Services.MyService;
 import uk.ac.tees.aad.w9316578.SqliteDatabase.DataBaseHelper;
 
 public class CustomerHomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -97,6 +95,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
 
         LoadCartItems();
         LoadFood();
+        StartService();
 
         cartImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +110,12 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
 
         LoadMyProfile();
 
+
+    }
+
+    private void StartService() {
+        Intent intent=new Intent(CustomerHomeActivity.this,MyService.class);
+        startService(intent);
 
     }
 

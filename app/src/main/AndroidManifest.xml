@@ -8,24 +8,36 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.QuickFood">
-        <activity android:name=".Activity.RiderHomeActivity">
+        android:theme="@style/Theme.QuickFood"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.AdminAvailableOrderActivity"></activity>
 
+        <service
+            android:name=".Services.MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".Activity.RiderCompletedOrderActivity" />
+        <activity android:name=".Activity.RiderViewOrderDetialActivity" />
+        <activity android:name=".Activity.RiderAvailableOrderActivity" />
+
+        <receiver android:name=".Receiver.NetworkReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
+        </receiver>
 
-        </activity>
+        <activity android:name=".Activity.RiderHomeActivity"></activity>
+        <activity android:name=".Activity.RiderTrackActivity" />
         <activity android:name=".Activity.CustomerViewOrderDetialActivity" />
         <activity android:name=".Activity.CustomerMyOrderActivity" />
         <activity android:name=".Activity.ViewCartActivity" />
@@ -34,15 +46,17 @@
             android:name=".Activity.CustomerProfileActivity"
             android:parentActivityName=".Activity.CustomerHomeActivity" />
         <activity android:name=".Activity.AdminViewFoodActivity" />
-        <activity android:name=".Activity.AdminHomeActivity" />
+        <activity android:name=".Activity.AdminHomeActivity"
+            android:parentActivityName=".Activity.AdminAvailableOrderActivity"/>
         <activity android:name=".Activity.LandingActivity" />
-        <activity android:name=".Activity.CustomerHomeActivity">
-
-        </activity>
+        <activity android:name=".Activity.CustomerHomeActivity"></activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".Activity.SplashActivity" >
+        <activity android:name=".Activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <uses-library
